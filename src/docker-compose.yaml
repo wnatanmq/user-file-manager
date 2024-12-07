@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  localstack:
+    container_name: localstack
+    image: localstack/localstack
+    ports:
+      - "127.0.0.1:4566:4566"            # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+    environment:
+      PERSISTENCE: 0
+      DOCKER_HOST: unix:///var/run/docker.sock
+      DNS_SERVER: 1
+      ECS_REMOVE_CONTAINERS: 0
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+    volumes:
+      - "./path_to_ignore/:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    command:
+      - awslocal s3api create-bucket --bucket user-folders
+    healthcheck:
+      test: ["CMD", "curl", "http://localhost:4566/_localstack/health?reload"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
