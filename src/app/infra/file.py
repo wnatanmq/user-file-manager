@@ -4,7 +4,7 @@ class File():
     def __init__(self):
         self.path = "/tmp/user-file-manager/"
         self._config_path()
-        
+        self.max_item_per_page = 5
     def _config_path():
         if not os.path.exists(
             "/tmp/user-file-manager/"
@@ -24,10 +24,15 @@ class File():
             f.close()
 
     def list_file_by_user(
-        index_file : int,
-        user_name : str
+        self,
+        user_name : str,
+        index_file=0,        
     ):
         dir_file = f"/tmp/user-file-manager/{user_name}/"         
         if not os.path.exists(dir_file):
             return []
+        all_files = os.listdir(dir_file)
+        return all_files[
+            index_file : all_files + self.max_item_per_page
+        ]
         
