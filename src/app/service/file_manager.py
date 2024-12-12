@@ -1,6 +1,6 @@
 
 from typing import Union
-from src.app.infra.s3 import S3Provider
+from src.app.infra.file import File
 from src.app.infra.dynamo_db import DynamoDB
 from werkzeug.exceptions import HTTPException
 import re
@@ -11,7 +11,7 @@ class InvalidFilename(HTTPException):
 
 class FileManager():
     def __init__(self):
-        self.s3_provider = S3Provider()
+        self.file_provider = File()
         self.max_length_folder_name = 32
         
     def filename_validator(self, filename : str) -> None:
@@ -22,12 +22,13 @@ class FileManager():
     def put_file(
         self, 
         file : bytes, 
-        filename : str,
+        file_name : str,
         user_name : str
     ):
-        self.s3_provider.upload_file(
+        self.file_provider.create_file_by_user(
+            filename=file_name,
             file=file,
-            key=f"{user_name}/{filename}"
+            user_name=user_name
         )
     
     def list_file(
@@ -35,25 +36,9 @@ class FileManager():
         user_name : str,
         pagination_token : Union[str, None]
     ):
-        result_paginate =  self.s3_provider.paginate_file(
-            pagination_token=pagination_token,
-            prefix=f"{user_name}/"
-        )
-        if not result_paginate.get("Contents"):
-            return []
-        result =  {
-            "files" : list(
-            map(
-                lambda x: x["Key"],
-                result_paginate["Contents"]
-            )
-        ),
-        }
-        if result_paginate.get("NextContinuationToken"):
-            result["pagination_token"] = result_paginate["NextContinuationToken"]
+        self.file_provider
         
-        return result
-    
+            
     def update_users_info(
         user_name : str,
         file : bytes, 

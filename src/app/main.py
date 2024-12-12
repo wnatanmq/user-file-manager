@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from os import getenv
 
 from src.app.service.file_manager  import FileManager
-from src.app.infra.s3 import S3Provider
 
 UPLOAD_FOLDER = './'
 
@@ -17,7 +16,6 @@ if getenv("ENVIRONMENT") is None:
 
 @app.get("/healthcheck")
 def health_check():
-    S3Provider().list_s3()
     return "ok!"
 
 @app.put("/file")
@@ -28,21 +26,16 @@ def user_upload_file():
         user_name = request.args.get('user_name')
         file_name = request.args.get('filename')
         uploader.filename_validator(file_name)
+        uploader.put_file(
+            user_name=user_name,
+            file=file,
+            file_name=file_name
+        )
         if file is None:
             raise HTTPException("no file has uploaded.")
         if user_name is None or file_name is None:
             raise HTTPException("no file has uploaded.")
-        uploader.put_file(
-            filename=file_name,
-            file=file,
-            user_name=user_name
-        )
-        uploader.update_users_info(
-            user_name=user_name,
-            file=file,
-            file_name=file_name
-        )        
-        return "ok"
+        fi
     except Exception as e:
         return Response("", status=500, mimetype='application/json')
     except HTTPException as e:
