@@ -1,7 +1,7 @@
 
 from typing import Union
-from infra.s3 import S3Provider
-from infra.dynamo_db import DynamoDB
+from src.app.infra.s3 import S3Provider
+from src.app.infra.dynamo_db import DynamoDB
 from werkzeug.exceptions import HTTPException
 import re
 

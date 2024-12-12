@@ -3,8 +3,8 @@ from flask import Flask, Response, request
 from dotenv import load_dotenv
 from os import getenv
 
-from service.file_manager import FileManager
-from infra.s3 import S3Provider
+from src.app.service.file_manager  import FileManager
+from src.app.infra.s3 import S3Provider
 
 UPLOAD_FOLDER = './'
 

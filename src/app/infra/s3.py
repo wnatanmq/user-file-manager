@@ -1,6 +1,6 @@
 import boto3
 
-from helper import constants
+from src.app.helper import constants
 
     
 class S3Provider:
