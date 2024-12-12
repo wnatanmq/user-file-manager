@@ -34,3 +34,17 @@ class S3Provider:
         return self.client.list_objects_v2(**page_iterator_params)    
 
     
+
+def find_largest_file(self, prefix : str):
+    paginator = self.client.get_paginator("list_objects_v2")
+    largest_file = None
+    largest_size = 0
+    for page in paginator.paginate(Bucket=self.bucket_name, Prefix=prefix):
+        if "Contents" in page:
+            for obj in page["Contents"]:
+                size = obj["Size"]
+                if size > largest_size:
+                    largest_size = size
+                    largest_file = obj["Key"]
+
+    return largest_file, largest_size

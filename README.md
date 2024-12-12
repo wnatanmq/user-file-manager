@@ -18,6 +18,4 @@ curl -X PUT "http://localhost:8000/uploadfile" \
 -F "filename=example.txt" \
 -F "user_name=JohnDoe" \
 -F "file=@/README.md"
-
-
 ```
